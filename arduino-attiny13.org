@@ -1,0 +1,127 @@
+* From
+
+https://habr.com/post/234477/
+
+* Порт
+
+
+сmod 777 /dev/ttyUSB0
+
+* Выбор платы
+
+Processor: atmega328P
+Board: Arduino Diecimila or Duemilanove
+
+* Распаковываем архив с ядром для Attiny13
+
+https://github.com/orlv/at13/archive/master.zip
+to Arduino/hardware/
+
+* Перезапускаем Arduino IDE
+
+убедимся что в числе плат появилась attiny13
+
+* Прошиваем Arduino ISP в базовую плату
+
+* Замыкаем резистором 100 Ом GND и VCC ардуины, чтобы избежать ее сброса
+
+* Потом нужно изменить тип программатора на Arduino as ISP
+
+* Установить частоту в 1.2 MHz
+
+* Burn Bootloader
+
+Что же среда делает при нажатии на кнопку «Записать загрузчик»?
+
+Arduino IDE в данном случае просто выставляет нужные фьюзы микроконтроллера.
+К примеру, мне нужно, чтобы ATtiny13 работал на частоте в 4.8 мГц, я выбираю нужную мне
+частоту и только один раз жму кнопку «Записать загрузчик» — всё. Теперь микроконтроллер
+будет всегда работать на заданной частоте, если будет нужно изменить частоту опять —
+проделываем описанную выше процедуру.
+
+* Upload Blink
+
+* Show verbose output in settings
+
+* Install avrdude
+
+sudo apt install avrdude
+
+* Get fuses
+
+avrdude -C/home/rigidus/build/arduino-1.8.6/hardware/tools/avr/etc/avrdude.conf -c  ftbb -P ft0 -B 9600 -p attiny13 -U
+lfuse:r:low_fuse_val.hex:h -U hfuse:r:high_fuse_val.hex:h
+
+* log
+
+#+BEGIN_SRC sh
+  /home/rigidus/build/arduino-1.8.6/arduino-builder -dump-prefs -logger=machine -hardware /home/rigidus/build/arduino-1.8.6/hardware -tools /home/rigidus/build/arduino-1.8.6/tools-builder -tools /home/rigidus/build/arduino-1.8.6/hardware/tools/avr -built-in-libraries /home/rigidus/build/arduino-1.8.6/libraries -libraries /home/rigidus/Arduino/libraries -fqbn=attiny13:avr:attiny13:freq=f1200000 -ide-version=10806 -build-path /tmp/arduino_build_63306 -warnings=none -build-cache /tmp/arduino_cache_584089 -prefs=build.warn_data_percentage=75 -verbose /home/rigidus/Arduino/Blink1/Blink1.ino
+  /home/rigidus/build/arduino-1.8.6/arduino-builder -compile -logger=machine -hardware /home/rigidus/build/arduino-1.8.6/hardware -tools /home/rigidus/build/arduino-1.8.6/tools-builder -tools /home/rigidus/build/arduino-1.8.6/hardware/tools/avr -built-in-libraries /home/rigidus/build/arduino-1.8.6/libraries -libraries /home/rigidus/Arduino/libraries -fqbn=attiny13:avr:attiny13:freq=f1200000 -ide-version=10806 -build-path /tmp/arduino_build_63306 -warnings=none -build-cache /tmp/arduino_cache_584089 -prefs=build.warn_data_percentage=75 -verbose /home/rigidus/Arduino/Blink1/Blink1.ino
+  Using board 'attiny13' from platform in folder: /home/rigidus/build/arduino-1.8.6/hardware/attiny13/avr
+  Using core 'core13' from platform in folder: /home/rigidus/build/arduino-1.8.6/hardware/attiny13/avr
+  Build options changed, rebuilding all
+  Detecting libraries used...
+  /home/rigidus/build/arduino-1.8.6/hardware/tools/avr/bin/avr-g++ -c -g -Os -w -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -w -x c++ -E -CC -mmcu=attiny13 -DF_CPU=1200000L -DARDUINO=10806 -DARDUINO_AVR_ATTINY13 -DARDUINO_ARCH_AVR -I/home/rigidus/build/arduino-1.8.6/hardware/attiny13/avr/cores/core13 /tmp/arduino_build_63306/sketch/Blink1.ino.cpp -o /dev/null
+  Generating function prototypes...
+  /home/rigidus/build/arduino-1.8.6/hardware/tools/avr/bin/avr-g++ -c -g -Os -w -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -w -x c++ -E -CC -mmcu=attiny13 -DF_CPU=1200000L -DARDUINO=10806 -DARDUINO_AVR_ATTINY13 -DARDUINO_ARCH_AVR -I/home/rigidus/build/arduino-1.8.6/hardware/attiny13/avr/cores/core13 /tmp/arduino_build_63306/sketch/Blink1.ino.cpp -o /tmp/arduino_build_63306/preproc/ctags_target_for_gcc_minus_e.cpp
+  /home/rigidus/build/arduino-1.8.6/tools-builder/ctags/5.8-arduino11/ctags -u --language-force=c++ -f - --c++-kinds=svpf --fields=KSTtzns --line-directives /tmp/arduino_build_63306/preproc/ctags_target_for_gcc_minus_e.cpp
+  Compiling sketch...
+  /home/rigidus/build/arduino-1.8.6/hardware/tools/avr/bin/avr-g++ -c -g -Os -w -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -mmcu=attiny13 -DF_CPU=1200000L -DARDUINO=10806 -DARDUINO_AVR_ATTINY13 -DARDUINO_ARCH_AVR -I/home/rigidus/build/arduino-1.8.6/hardware/attiny13/avr/cores/core13 /tmp/arduino_build_63306/sketch/Blink1.ino.cpp -o /tmp/arduino_build_63306/sketch/Blink1.ino.cpp.o
+  Compiling libraries...
+  Compiling core...
+  Using precompiled core: /tmp/arduino_cache_584089/core/core_attiny13_avr_attiny13_freq_f1200000_443e2cb52a073bc3c2d24421191984f4.a
+  Linking everything together...
+  /home/rigidus/build/arduino-1.8.6/hardware/tools/avr/bin/avr-gcc -w -Os -Wl,--gc-sections -mmcu=attiny13 -o /tmp/arduino_build_63306/Blink1.ino.elf /tmp/arduino_build_63306/sketch/Blink1.ino.cpp.o /tmp/arduino_build_63306/../arduino_cache_584089/core/core_attiny13_avr_attiny13_freq_f1200000_443e2cb52a073bc3c2d24421191984f4.a -L/tmp/arduino_build_63306 -lm
+  /home/rigidus/build/arduino-1.8.6/hardware/tools/avr/bin/avr-objcopy -O ihex -j .eeprom --set-section-flags=.eeprom=alloc,load --no-change-warnings --change-section-lma .eeprom=0 /tmp/arduino_build_63306/Blink1.ino.elf /tmp/arduino_build_63306/Blink1.ino.eep
+  /home/rigidus/build/arduino-1.8.6/hardware/tools/avr/bin/avr-objcopy -O ihex -R .eeprom /tmp/arduino_build_63306/Blink1.ino.elf /tmp/arduino_build_63306/Blink1.ino.hex
+  /home/rigidus/build/arduino-1.8.6/hardware/tools/avr/bin/avr-size -A /tmp/arduino_build_63306/Blink1.ino.elf
+  Sketch uses 348 bytes (33%) of program storage space. Maximum is 1024 bytes.
+  Global variables use 4 bytes of dynamic memory.
+  /home/rigidus/build/arduino-1.8.6/hardware/tools/avr/bin/avrdude -C/home/rigidus/build/arduino-1.8.6/hardware/tools/avr/etc/avrdude.conf -v -pattiny13 -carduino -P/dev/ttyUSB0 -b19200 -Uflash:w:/tmp/arduino_build_63306/Blink1.ino.hex:i
+
+#+END_SRC
+
+* avr-gcc
+
+sudo apt install gcc-avr
+
+* Compile
+
+см Makefile
+
+#+BEGIN_SRC sh
+  /home/rigidus/build/arduino-1.8.6/hardware/tools/avr/bin/avr-gcc \
+  -w \
+  -Os \
+  -Wl,--gc-sections \
+  -mmcu=attiny13 \
+  -o /tmp/arduino_build_63306/Blink1.ino.elf \
+  /tmp/arduino_build_63306/sketch/Blink1.ino.cpp.o \
+  /tmp/arduino_build_63306/../arduino_cache_584089/core/core_attiny13_avr_attiny13_freq_f1200000_443e2cb52a073bc3c2d24421191984f4.a \
+  -L/tmp/arduino_build_63306 -lm \
+
+  /home/rigidus/build/arduino-1.8.6/hardware/tools/avr/bin/avr-objcopy \
+  -O ihex \
+  -j .eeprom \
+  --set-section-flags=.eeprom=alloc,load \
+  --no-change-warnings \
+  --change-section-lma .eeprom=0 /tmp/arduino_build_63306/Blink1.ino.elf \
+  /tmp/arduino_build_63306/Blink1.ino.eep \
+
+  /home/rigidus/build/arduino-1.8.6/hardware/tools/avr/bin/avr-objcopy \
+  -O ihex \
+  -R .eeprom /tmp/arduino_build_63306/Blink1.ino.elf \
+  /tmp/arduino_build_63306/Blink1.ino.hex \
+#+END_SRC
+
+* AVRDUDE
+
+#+BEGIN_SRC sh
+  /home/rigidus/build/arduino-1.8.6/hardware/tools/avr/bin/avrdude \
+  -C/home/rigidus/build/arduino-1.8.6/hardware/tools/avr/etc/avrdude.conf \
+  -v               \
+  -pattiny13       \
+  -carduino        \
+  -P/dev/ttyUSB0   \
+  -b19200 -Uflash:w:/home/rigidus/org/arduino/blnk.hex:i \
+#+END_SRC
